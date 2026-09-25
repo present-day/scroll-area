@@ -1,0 +1,110 @@
+.demo-frame {
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.demo-frame--card {
+  background: light-dark(#fff, #1f2023);
+  border: 1px solid light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.1));
+  box-shadow: 0 1px 2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.4));
+}
+
+.demo-frame--tinted {
+  background: light-dark(oklch(0.93 0.045 250), oklch(0.3 0.06 250));
+}
+
+.demo-list {
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+}
+
+.demo-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.demo-list li:hover {
+  background: light-dark(rgb(0 0 0 / 0.04), rgb(255 255 255 / 0.05));
+}
+
+.demo-list strong,
+.demo-list small {
+  display: block;
+}
+
+.demo-list small {
+  opacity: 0.6;
+}
+
+.demo-avatar {
+  flex: none;
+  inline-size: 32px;
+  block-size: 32px;
+  border-radius: 50%;
+  background: oklch(0.72 0.12 var(--hue));
+}
+
+.demo-chips {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  inline-size: max-content;
+}
+
+.demo-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: light-dark(rgb(0 0 0 / 0.06), rgb(255 255 255 / 0.08));
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(16, 88px);
+  gap: 1px;
+  inline-size: max-content;
+  background: light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.08));
+}
+
+.demo-grid span {
+  padding: 10px;
+  font-variant-numeric: tabular-nums;
+  background: light-dark(#fff, #1f2023);
+}
+
+.demo-frame--tinted .demo-grid span {
+  background: light-dark(oklch(0.93 0.045 250), oklch(0.3 0.06 250));
+}
+
+.demo-prose {
+  max-inline-size: 60ch;
+  padding: 4px 20px;
+}
+
+.demo-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-block-end: 16px;
+}
+
+.demo-button {
+  padding: 6px 12px;
+  border: 1px solid light-dark(rgb(0 0 0 / 0.15), rgb(255 255 255 / 0.15));
+  border-radius: 8px;
+  color: inherit;
+  font: inherit;
+  background: light-dark(#fff, #1f2023);
+  cursor: pointer;
+}
+
+.demo-readout {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  opacity: 0.7;
+}

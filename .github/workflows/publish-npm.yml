@@ -1,0 +1,41 @@
+name: Publish to npm
+
+# Publishing the same version twice always fails. Run only when you tag a release
+# (e.g. after merging a version bump: git tag v0.1.0 && git push origin v0.1.0),
+# or use "Run workflow" from the Actions tab (workflow_dispatch).
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # required for npm trusted publishing (OIDC)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          # Match `packageManager` so the lockfile format agrees with local installs.
+          bun-version-file: package.json
+
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run type-check
+      - run: bun run test
+      - run: bun run build
+
+      # npm Trusted Publishing (OIDC) needs the npm CLI >= 11.5.1; bun publish
+      # has no OIDC support. Don't set registry-url or NODE_AUTH_TOKEN: any
+      # configured token shadows the OIDC exchange.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: npm install -g npm@latest
+      - name: Publish to npm (OIDC)
+        run: npm publish --provenance --access public

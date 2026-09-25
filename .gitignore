@@ -1,0 +1,25 @@
+# Dependencies and build output
+node_modules
+dist
+coverage
+storybook-static
+*.tsbuildinfo
+*.tgz
+
+# Tool temp files
+*.log
+.cache
+vite.config.*.timestamp-*
+
+# Local environment and editor state
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# OS
+.DS_Store
+Thumbs.db

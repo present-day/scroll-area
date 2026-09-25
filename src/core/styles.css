@@ -1,0 +1,217 @@
+/*
+ * Public tokens (set on any ancestor to override). Defaults are var()
+ * fallbacks so nothing here shadows an inherited value:
+ *   --scroll-area-edge-size        depth of the fade/shadow      24px
+ *   --scroll-area-edge-fade-min    opacity at the very edge      transparent
+ *   --scroll-area-shadow-color     shadow tint                   light-dark()
+ *   --scroll-area-thumb-color      scrollbar thumb               light-dark()
+ *   --scroll-area-thumb-color-hover
+ *   --scroll-area-thumb-size       thumb thickness               6px
+ *   --scroll-area-touch-target     minimum thumb hit area        24px
+ *   --scroll-area-content-display  content wrapper display       table (Radix) / block (Base UI)
+ *
+ * light-dark() resolves against the inherited `color-scheme`, which this
+ * package never sets.
+ */
+
+/* Per-edge depth, registered so it can transition. */
+@property --_sa-t {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --_sa-r {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --_sa-b {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --_sa-l {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+/* :where() keeps sizing easy to override. */
+:where(.sa-root) {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.sa-root {
+  --_sa-size: var(--scroll-area-edge-size, 24px);
+  /* Reset explicitly so a nested scroll area doesn't inherit its parent's edges. */
+  --_sa-t: 0px;
+  --_sa-r: 0px;
+  --_sa-b: 0px;
+  --_sa-l: 0px;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition:
+    --_sa-t 150ms ease-out,
+    --_sa-r 150ms ease-out,
+    --_sa-b 150ms ease-out,
+    --_sa-l 150ms ease-out;
+}
+
+.sa-root[data-overflow-top] {
+  --_sa-t: var(--_sa-size);
+}
+.sa-root[data-overflow-right] {
+  --_sa-r: var(--_sa-size);
+}
+.sa-root[data-overflow-bottom] {
+  --_sa-b: var(--_sa-size);
+}
+.sa-root[data-overflow-left] {
+  --_sa-l: var(--_sa-size);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sa-root {
+    transition: none;
+  }
+}
+
+:where(.sa-viewport) {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.sa-viewport {
+  box-sizing: border-box;
+  border-radius: inherit;
+}
+
+.sa-viewport:focus-visible {
+  /* Base UI makes an overflowing viewport focusable; the root clips outer outlines. */
+  outline: 2px solid Highlight;
+  outline-offset: -2px;
+}
+
+.sa-viewport[data-radix-scroll-area-viewport] > div {
+  /* Overrides the inline `display: table` Radix sets on the content wrapper. */
+  /* biome-ignore lint/complexity/noImportantStyles: only way to beat an inline style */
+  display: var(--scroll-area-content-display, table) !important;
+}
+
+.sa-content {
+  display: var(--scroll-area-content-display, block);
+}
+
+/*
+ * Fade: one mask layer per edge, intersected. A 0px edge is fully opaque, so
+ * any combination of edges works without combination rules.
+ */
+.sa-root[data-edge-effect="fade"] > .sa-viewport {
+  --_sa-min: var(--scroll-area-edge-fade-min, transparent);
+  mask-image:
+    linear-gradient(to bottom, var(--_sa-min), #000 var(--_sa-t)),
+    linear-gradient(to left, var(--_sa-min), #000 var(--_sa-r)),
+    linear-gradient(to top, var(--_sa-min), #000 var(--_sa-b)),
+    linear-gradient(to right, var(--_sa-min), #000 var(--_sa-l));
+  mask-composite: intersect;
+}
+
+/* Shadow: an overlay above the content and below the scrollbars. */
+.sa-edge-shadow {
+  --_sa-c: var(
+    --scroll-area-shadow-color,
+    light-dark(rgb(0 0 0 / 0.16), rgb(0 0 0 / 0.6))
+  );
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(to bottom, var(--_sa-c), transparent) top / 100%
+    var(--_sa-t) no-repeat,
+    linear-gradient(to left, var(--_sa-c), transparent) right / var(--_sa-r)
+    100% no-repeat,
+    linear-gradient(to top, var(--_sa-c), transparent) bottom / 100%
+    var(--_sa-b) no-repeat,
+    linear-gradient(to right, var(--_sa-c), transparent) left / var(--_sa-l)
+    100% no-repeat;
+}
+
+.sa-scrollbar {
+  --_sa-gutter: 2px;
+  display: flex;
+  box-sizing: border-box;
+  padding: var(--_sa-gutter);
+  user-select: none;
+  /* Disables browser panning and zooming gestures on the track. */
+  touch-action: none;
+}
+
+/* Mounted (so the viewport can scroll) but never shown. */
+.sa-root[data-scrollbars="hidden"] > .sa-scrollbar {
+  display: none;
+}
+
+/*
+ * Base UI has no visibility prop, so "hover" and "scroll" key off the
+ * hover/scroll state its scrollbars carry. Radix handles these itself.
+ */
+.sa-root[data-primitive="base-ui"] > .sa-scrollbar {
+  transition: opacity 150ms;
+}
+
+.sa-root[data-primitive="base-ui"][data-scrollbars="hover"]
+  > .sa-scrollbar:not([data-hovering], [data-scrolling]),
+.sa-root[data-primitive="base-ui"][data-scrollbars="scroll"]
+  > .sa-scrollbar:not([data-scrolling]) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sa-root[data-primitive="base-ui"] > .sa-scrollbar {
+    transition: none;
+  }
+}
+
+.sa-scrollbar[data-orientation="vertical"] {
+  inline-size: calc(var(--scroll-area-thumb-size, 6px) + var(--_sa-gutter) * 2);
+}
+
+.sa-scrollbar[data-orientation="horizontal"] {
+  flex-direction: column;
+  block-size: calc(var(--scroll-area-thumb-size, 6px) + var(--_sa-gutter) * 2);
+}
+
+.sa-thumb {
+  position: relative;
+  flex: 1;
+  border-radius: 9999px;
+  background: var(
+    --scroll-area-thumb-color,
+    light-dark(rgb(0 0 0 / 0.28), rgb(255 255 255 / 0.28))
+  );
+  transition: background-color 150ms;
+}
+
+.sa-thumb:hover {
+  background: var(
+    --scroll-area-thumb-color-hover,
+    light-dark(rgb(0 0 0 / 0.45), rgb(255 255 255 / 0.45))
+  );
+}
+
+/* Larger hit area for touch: https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html */
+.sa-thumb::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: var(--scroll-area-touch-target, 24px);
+  min-block-size: var(--scroll-area-touch-target, 24px);
+}

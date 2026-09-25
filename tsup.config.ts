@@ -8,7 +8,13 @@ export default defineConfig({
   },
   format: ['cjs', 'esm'],
   // Types for the JS entries only; the stylesheet entry has none.
-  dts: { entry: { index: 'src/index.ts', 'base-ui': 'src/base-ui/index.ts' } },
+  dts: {
+    entry: { index: 'src/index.ts', 'base-ui': 'src/base-ui/index.ts' },
+    // tsup's declaration build injects `baseUrl`, which TypeScript 6 rejects as
+    // deprecated (TS5101). Silence it here rather than in tsconfig so the
+    // tsconfig stays valid for editors running TypeScript 5.x.
+    compilerOptions: { ignoreDeprecations: '6.0' },
+  },
   sourcemap: true,
   clean: true,
   external: [

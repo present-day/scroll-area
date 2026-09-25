@@ -38,4 +38,5 @@ jobs:
           node-version: 24
       - run: npm install -g npm@latest
       - name: Publish to npm (OIDC)
-        run: npm publish --provenance --access public
+        # Verbose so the OIDC token exchange is visible when it fails.
+        run: npm publish --provenance --access public --loglevel verbose

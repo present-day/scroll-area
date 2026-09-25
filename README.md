@@ -84,6 +84,8 @@ Colors use `light-dark()` and follow the inherited `color-scheme`. The package n
 [data-theme="dark"] { color-scheme: dark; } /* or force a mode */
 ```
 
+If your bundler's CSS targets predate `light-dark()` (Vite's default `build.cssTarget` does), Lightning CSS rewrites it into a `var()` polyfill that only works when `color-scheme` is declared in CSS, as above. Setting `color-scheme` only from JavaScript or a `<meta>` tag leaves the polyfill undefined and the colors invalid. Either declare it in CSS or raise the targets to `chrome123`, `firefox120`, and `safari17.5`.
+
 Override these tokens on any ancestor:
 
 | Token | Default |

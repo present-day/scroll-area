@@ -1,6 +1,6 @@
 {
   "name": "@present-day/scroll-area",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Radix or Base UI scroll area with theme-aware edge fades and shadows",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

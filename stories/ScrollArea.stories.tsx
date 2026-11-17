@@ -10,6 +10,7 @@ import {
 import { ScrollArea as BaseUIScrollArea } from '../src/base-ui'
 import { ScrollArea } from './adapter'
 import {
+  DEMO_SURFACES,
   type DemoContent,
   DemoContentView,
   DemoList,
@@ -64,7 +65,7 @@ const meta = {
       control: 'select',
       options: ['list', 'chips', 'grid', 'prose'],
     },
-    surface: { control: 'inline-radio', options: ['plain', 'card', 'tinted'] },
+    surface: { control: 'select', options: DEMO_SURFACES },
     shadowColor: {
       control: 'color',
       description: 'Overrides --scroll-area-shadow-color (edgeEffect="shadow")',
@@ -137,6 +138,67 @@ export const TintedSurface: Story = {
           <DemoContentView content={content} />
         </ScrollArea>
       </Frame>
+    </div>
+  ),
+}
+
+const COLOR_SCHEMES = ['light', 'dark'] as const
+const COMPARED_EDGE_EFFECTS = [
+  SCROLL_AREA_EDGE_EFFECT.FADE,
+  SCROLL_AREA_EDGE_EFFECT.SHADOW,
+] as const
+
+export const TransparentFade: Story = {
+  name: 'Fade over a busy background (transparent vs. shadow)',
+  args: { surface: 'checkerboard', edgeSize: 48, width: 280, height: 240 },
+  render: ({
+    surface,
+    shadowColor,
+    width,
+    height,
+    content: _content,
+    axis: _axis,
+    edgeEffect: _edgeEffect,
+    ...props
+  }) => (
+    <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+      {COLOR_SCHEMES.map((scheme) => (
+        <section
+          key={scheme}
+          className="demo-scheme"
+          style={{ colorScheme: scheme }}
+        >
+          <div className="demo-compare">
+            {COMPARED_EDGE_EFFECTS.map((edgeEffect) => (
+              <figure key={edgeEffect}>
+                <figcaption className="demo-readout">
+                  {scheme} · edgeEffect="{edgeEffect}"
+                </figcaption>
+                <Frame surface={surface} width={width} height={height}>
+                  <ScrollArea
+                    {...props}
+                    axis="vertical"
+                    edgeEffect={edgeEffect}
+                    style={shadowStyle(shadowColor)}
+                  >
+                    <DemoContentView content="list" />
+                  </ScrollArea>
+                </Frame>
+                <Frame surface={surface} width={width} height={64}>
+                  <ScrollArea
+                    {...props}
+                    axis="horizontal"
+                    edgeEffect={edgeEffect}
+                    style={shadowStyle(shadowColor)}
+                  >
+                    <DemoContentView content="chips" />
+                  </ScrollArea>
+                </Frame>
+              </figure>
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   ),
 }

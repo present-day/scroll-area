@@ -3,7 +3,15 @@ import type { CSSProperties, ReactNode } from 'react'
 import './demo.css'
 
 export type DemoContent = 'list' | 'chips' | 'grid' | 'prose'
-export type DemoSurface = 'plain' | 'card' | 'tinted'
+export const DEMO_SURFACES = [
+  'plain',
+  'card',
+  'tinted',
+  'checkerboard',
+  'stripes',
+  'gradient',
+] as const
+export type DemoSurface = (typeof DEMO_SURFACES)[number]
 
 const NAMES = [
   'Ada Lovelace',

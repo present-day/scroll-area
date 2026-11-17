@@ -73,6 +73,8 @@ import { SCROLL_AREA_EDGE_EFFECT, ScrollArea } from '@present-day/scroll-area'
 - **shadow** draws `--scroll-area-shadow-color` over the edge. Use it when content should stay fully opaque.
 - **none** draws nothing.
 
+The [Fade over a busy background](https://present-day.github.io/scroll-area/?path=/story/scrollarea--transparent-fade) story shows the difference over a checkerboard: the fade lets the pattern through, and the shadow tints it.
+
 The root always carries `data-overflow-top|right|bottom|left` attributes for your own styling. It also carries `data-edge-effect`, `data-scrollbars`, and `data-primitive` (`radix` or `base-ui`).
 
 ## Theming

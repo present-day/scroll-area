@@ -13,6 +13,38 @@
   background: light-dark(oklch(0.93 0.045 250), oklch(0.3 0.06 250));
 }
 
+/*
+ * Busy surfaces sit behind the scroll area, so anything that shows through an
+ * edge is the surface itself and anything painted over it is the edge effect.
+ */
+.demo-frame--checkerboard {
+  background:
+    repeating-conic-gradient(
+      light-dark(#c4c4cc, #45464d) 0 25%,
+      light-dark(#fff, #18191c) 0 50%
+    )
+    0 0 / 24px 24px;
+}
+
+.demo-frame--stripes {
+  background: repeating-linear-gradient(
+    45deg,
+    light-dark(oklch(0.86 0.13 85), oklch(0.46 0.1 85)) 0 12px,
+    light-dark(oklch(0.78 0.11 250), oklch(0.34 0.1 250)) 12px 24px
+  );
+}
+
+.demo-frame--gradient {
+  background: linear-gradient(
+    135deg,
+    light-dark(oklch(0.8 0.15 20), oklch(0.45 0.15 20)),
+    light-dark(oklch(0.86 0.15 95), oklch(0.5 0.12 95)),
+    light-dark(oklch(0.82 0.15 160), oklch(0.45 0.12 160)),
+    light-dark(oklch(0.78 0.13 250), oklch(0.4 0.14 250)),
+    light-dark(oklch(0.78 0.15 320), oklch(0.42 0.15 320))
+  );
+}
+
 .demo-list {
   margin: 0;
   padding: 6px;
@@ -80,6 +112,25 @@
   background: light-dark(oklch(0.93 0.045 250), oklch(0.3 0.06 250));
 }
 
+:is(.demo-frame--checkerboard, .demo-frame--stripes, .demo-frame--gradient)
+  .demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+/* Opaque content makes it plain that the content fades, not the surface. */
+:is(.demo-frame--checkerboard, .demo-frame--stripes, .demo-frame--gradient)
+:is(.demo-list li, .demo-chip, .demo-grid span, .demo-prose p) {
+  background: light-dark(#fff, #1f2023);
+}
+
+:is(.demo-frame--checkerboard, .demo-frame--stripes, .demo-frame--gradient)
+  .demo-prose
+  p {
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
 .demo-prose {
   max-inline-size: 60ch;
   padding: 4px 20px;
@@ -107,4 +158,24 @@
   font-family: ui-monospace, monospace;
   font-size: 12px;
   opacity: 0.7;
+}
+
+.demo-scheme {
+  padding: 20px;
+  border-radius: 18px;
+  background: light-dark(#f4f3ef, #141517);
+  color: light-dark(#1c1c1f, #e8e8ea);
+  border: 1px solid light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.1));
+}
+
+.demo-compare {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.demo-compare figure {
+  display: grid;
+  gap: 12px;
+  margin: 0;
 }
